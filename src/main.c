@@ -9,6 +9,7 @@
 #include "car.h"
 #include "carcamera.h"
 #include "widgets.h"
+#include "menu.h"
 
 int main()
 {
@@ -104,6 +105,9 @@ int main()
 
 	Button quit     = CreateButton("      Quit",   (Vector2){200, 100}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &stopRunning);
 	Button controls = CreateButton("   Controls", (Vector2){200, 190}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &openKeyMenu);
+	Menu test_menu  = CreateMenu("Test Menu");
+	AddButtonTo(&test_menu, quit);
+	AddButtonTo(&test_menu, controls);
 
 	int frame = 0;
 	while(!WindowShouldClose() && running)
@@ -133,11 +137,13 @@ int main()
 		{
 			DrawRectangle(0, 0, 800, 800, (Color) {0, 0, 0, 100});
 			
-			UpdateButton(&quit);
+			/*UpdateButton(&quit);
 			UpdateButton(&controls);
 
 			DrawButton(&quit);
-			DrawButton(&controls);
+			DrawButton(&controls);*/
+			UpdateMenu(test_menu);
+			DrawMenu(test_menu);
 		}
 
 		UpdateButton(&play);
@@ -146,6 +152,7 @@ int main()
 
 	}
 
+	DestroyMenu(test_menu);
 	DestroyCircuitView(circuit);
 	DestroyCircuitBone(model);
 
