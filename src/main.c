@@ -100,14 +100,44 @@ int main()
 	{
 		running = 0;
 	}
+
+	int * changing_key = NULL;
+	void change_key_forward()
+	{
+		changing_key = &test.controls.accelerate;
+	}
+	void change_key_backward()
+	{
+		changing_key = &test.controls.decelerate;
+	}
+	void change_key_left()
+	{
+		changing_key = &test.controls.turn_left;
+	}
+	void change_key_right()
+	{
+		changing_key = &test.controls.turn_right;
+	}
+
 	Texture2D button_texture = LoadTexture("img/button.png");
 	Button play = CreateButton("Play/Pause", (Vector2){650, 700}, (Vector2){100, 40}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &playPause);
 
-	Button quit     = CreateButton("      Quit",   (Vector2){200, 100}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &stopRunning);
-	Button controls = CreateButton("   Controls", (Vector2){200, 190}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &openKeyMenu);
-	Menu test_menu  = CreateMenu("Test Menu");
-	AddButtonTo(&test_menu, quit);
-	AddButtonTo(&test_menu, controls);
+
+	Menu pause  = CreateMenu("Pause");
+	AddButtonTo(&pause, CreateButton("   Controls",  (Vector2){200, 100}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &openKeyMenu));
+	AddButtonTo(&pause, CreateButton("      Quit",   (Vector2){200, 700}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &stopRunning));
+	AddButtonTo(&pause, CreateButton("      Host",   (Vector2){200, 190}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &playPause));
+	AddButtonTo(&pause, CreateButton("      Join",   (Vector2){200, 280}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &playPause));
+	AddButtonTo(&pause, CreateButton("    Resume",   (Vector2){200, 370}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &playPause));
+
+
+	Menu bindings = CreateMenu("Bindings");
+	AddButtonTo(&bindings, CreateButton("Forward", (Vector2){200, 100}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &change_key_forward));
+	AddButtonTo(&bindings, CreateButton("Backward", (Vector2){200, 190}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &change_key_backward));
+	AddButtonTo(&bindings, CreateButton("Left", (Vector2){200, 280}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &change_key_left));
+	AddButtonTo(&bindings, CreateButton("Right", (Vector2){200, 370}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &change_key_right));
+	AddButtonTo(&bindings, CreateButton("    Go back", (Vector2){200, 700}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &playPause));
+
 
 	int frame = 0;
 	while(!WindowShouldClose() && running)
@@ -133,26 +163,44 @@ int main()
 
 		DrawFPS(10, 10);
 
-		if(state == 0)
+		if(state != 1)
 		{
 			DrawRectangle(0, 0, 800, 800, (Color) {0, 0, 0, 100});
 			
-			/*UpdateButton(&quit);
-			UpdateButton(&controls);
+			if(state == 0)
+			{
+				UpdateMenu(pause);		
+				DrawMenu(pause);
+			}
+			else if(state == 2)
+			{
+				UpdateMenu(bindings);
+				DrawMenu(bindings);
+				
+				if(changing_key != NULL)
+				{	
+					int pressed = GetKeyPressed();
+					if(pressed != 0)
+					{
+						*changing_key = pressed;
+						changing_key = NULL;
+					}
 
-			DrawButton(&quit);
-			DrawButton(&controls);*/
-			UpdateMenu(test_menu);
-			DrawMenu(test_menu);
+					DrawText("Press a key", 10, 10, 48, RED);
+				}	
+			}
+		}
+		else
+		{
+			UpdateButton(&play);
+			DrawButton(&play);
 		}
 
-		UpdateButton(&play);
-		DrawButton(&play);
 		EndDrawing();
 
 	}
 
-	DestroyMenu(test_menu);
+	DestroyMenu(pause);
 	DestroyCircuitView(circuit);
 	DestroyCircuitBone(model);
 
