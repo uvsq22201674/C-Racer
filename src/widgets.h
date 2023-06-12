@@ -1,3 +1,4 @@
+
 #ifndef WIDGETS_H_INCLUDED
 #define WIDGETS_H_INCLUDED
 
@@ -13,7 +14,8 @@ typedef struct
 	Rectangle rest;
 	Rectangle activation;
 
-	void (*callback) ();
+	void (*callback) (int);
+	int arg;
 
 	// Internal use only
 
@@ -22,7 +24,7 @@ typedef struct
 	int cooldown;
 } Button;
 
-Button CreateButton(char * text, Vector2 pos, Vector2 size, Texture2D * sprite, Rectangle rest, Rectangle activation, void (*callback) ())
+Button CreateButton(char * text, Vector2 pos, Vector2 size, Texture2D * sprite, Rectangle rest, Rectangle activation, void (*callback) (int), int arg)
 {
 	return (Button) {
 		text,
@@ -32,6 +34,7 @@ Button CreateButton(char * text, Vector2 pos, Vector2 size, Texture2D * sprite, 
 		rest,
 		activation,
 		callback,
+		arg,
 		0,
 		0,
 		0
@@ -45,7 +48,7 @@ void UpdateButton(Button * b)
 		if(b->cooldown <= 0)
 		{
 			b->activated = 0;
-			(*b->callback) ();
+			(*b->callback) (b->arg);
 		}
 	}
 

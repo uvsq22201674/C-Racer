@@ -10,6 +10,7 @@
 #include "carcamera.h"
 #include "widgets.h"
 #include "menu.h"
+#include "user_interface.h"
 
 int main()
 {
@@ -83,90 +84,98 @@ int main()
 
 	Car test = CreateCar((CarType) rand()%4, &spritesheet);
 
-	int state = 0;
+	int state = 1;
 	int running = 1;
-	void set_pause()
+	
+	void change_menu(int arg)
 	{
-		state=0;
+		state = arg;
 	}
-	void set_play()
-	{
-		state = 1;
-	}
-	void openKeyMenu()
-	{
-		state = 2;
-	}
-	void openCarMenu()
-	{
-		state = 3;
-	}
-	void stopRunning()
+	void stopRunning(int arg)
 	{
 		running = 0;
 	}
 
 	int * changing_key = NULL;
-	void change_key_forward()
-	{
-		changing_key = &test.controls.accelerate;
-	}
-	void change_key_backward()
-	{
-		changing_key = &test.controls.decelerate;
-	}
-	void change_key_left()
-	{
-		changing_key = &test.controls.turn_left;
-	}
-	void change_key_right()
-	{
-		changing_key = &test.controls.turn_right;
-	}
-	void set_car_classic()
+	
+	
+	void set_car_classic(int arg)
 	{
 		test.type = Classic;
 	}
-	void set_car_formule1()
+	void set_car_formule1(int arg)
 	{
 		test.type = Formule1;
 	}
-	void set_car_beetle()
+	void set_car_beetle(int arg)
 	{
 		test.type = Beetle;
 	}
-	void set_car_zoe()
+	void set_car_zoe(int arg)
 	{
 		test.type = Zoe;
 	}
 
 	Texture2D button_texture = LoadTexture("img/button.png");
-	Button play = CreateButton("   Pause", (Vector2){650, 700}, (Vector2){100, 40}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &set_pause);
+
+	Menu pause  = CreateMenu("Pause", Normal);
+	AddButtonTo(&pause, CreateButton("   Controls",  (Vector2){200, 100}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &change_menu, 2));
+	AddButtonTo(&pause, CreateButton("       Car",  (Vector2){200, 190}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &change_menu, 3));
+	AddButtonTo(&pause, CreateButton("      Host",   (Vector2){200, 280}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &change_menu, 1));
+	AddButtonTo(&pause, CreateButton("      Join",   (Vector2){200, 370}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &change_menu, 1));
+	AddButtonTo(&pause, CreateButton("    Resume",   (Vector2){200, 460}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &change_menu, 0));
+	AddButtonTo(&pause, CreateButton("      Quit",   (Vector2){200, 700}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &stopRunning, 0));
 
 
-	Menu pause  = CreateMenu("Pause");
-	AddButtonTo(&pause, CreateButton("   Controls",  (Vector2){200, 100}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &openKeyMenu));
-	AddButtonTo(&pause, CreateButton("       Car",  (Vector2){200, 190}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &openCarMenu));
-	AddButtonTo(&pause, CreateButton("      Host",   (Vector2){200, 280}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &set_pause));
-	AddButtonTo(&pause, CreateButton("      Join",   (Vector2){200, 370}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &set_pause));
-	AddButtonTo(&pause, CreateButton("    Resume",   (Vector2){200, 460}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &set_play));
-	AddButtonTo(&pause, CreateButton("      Quit",   (Vector2){200, 700}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &stopRunning));
+	Menu bindings = CreateMenu("Bindings", KeyChange);
+	AddButtonTo(&bindings, CreateButton("Forward", (Vector2){200, 100}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, NULL, 0));
+	AddButtonTo(&bindings, CreateButton("Backward", (Vector2){200, 190}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, NULL, 0));
+	AddButtonTo(&bindings, CreateButton("Left", (Vector2){200, 280}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, NULL, 0));
+	AddButtonTo(&bindings, CreateButton("Right", (Vector2){200, 370}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, NULL, 0));
+	AddButtonTo(&bindings, CreateButton("    Go back", (Vector2){200, 700}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &change_menu, 1));
 
 
-	Menu bindings = CreateMenu("Bindings");
-	AddButtonTo(&bindings, CreateButton("Forward", (Vector2){200, 100}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &change_key_forward));
-	AddButtonTo(&bindings, CreateButton("Backward", (Vector2){200, 190}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &change_key_backward));
-	AddButtonTo(&bindings, CreateButton("Left", (Vector2){200, 280}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &change_key_left));
-	AddButtonTo(&bindings, CreateButton("Right", (Vector2){200, 370}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &change_key_right));
-	AddButtonTo(&bindings, CreateButton("    Go back", (Vector2){200, 700}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &set_pause));
+	Menu car_skin = CreateMenu("Car", Normal);
+	AddButtonTo(&car_skin, CreateButton("Classic", (Vector2){200, 100}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &set_car_classic, 0));
+	AddButtonTo(&car_skin, CreateButton("Formule 1", (Vector2){200, 190}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &set_car_formule1, 0));
+	AddButtonTo(&car_skin, CreateButton("Beetle", (Vector2){200, 280}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &set_car_beetle, 0));
+	AddButtonTo(&car_skin, CreateButton("Zoe", (Vector2){200, 370}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &set_car_zoe, 0));
+	AddButtonTo(&car_skin, CreateButton("    Go back", (Vector2){200, 700}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &change_menu, 1));
 
-	Menu car_skin = CreateMenu("Car");
-	AddButtonTo(&car_skin, CreateButton("Classic", (Vector2){200, 100}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &set_car_classic));
-	AddButtonTo(&car_skin, CreateButton("Formule 1", (Vector2){200, 190}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &set_car_formule1));
-	AddButtonTo(&car_skin, CreateButton("Beetle", (Vector2){200, 280}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &set_car_beetle));
-	AddButtonTo(&car_skin, CreateButton("Zoe", (Vector2){200, 370}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &set_car_zoe));
-	AddButtonTo(&car_skin, CreateButton("    Go back", (Vector2){200, 700}, (Vector2){400, 80}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &set_pause));
 
+	UserInterface ui = CreateUserInterface();
+
+	Button play = CreateButton("   Pause", (Vector2){650, 700}, (Vector2){100, 40}, &button_texture, (Rectangle){0, 0, 17, 6}, (Rectangle){0, 6, 17, 6}, &change_menu, 1);
+	AddButtonTo(ui.menus, play);
+
+	AddMenuTo(&ui, pause);
+	AddMenuTo(&ui, bindings);
+	void change_key(int arg)
+	{
+		switch(arg)
+		{
+		case 0:
+			ui.menus[2].changing_value = &test.controls.accelerate;
+		break;
+		case 1:
+			ui.menus[2].changing_value = &test.controls.decelerate;
+		break;
+		case 2:
+			ui.menus[2].changing_value = &test.controls.turn_left;
+		break;
+		case 3:
+			ui.menus[2].changing_value = &test.controls.turn_right;
+		break;
+		}
+	}
+
+	for(int i = 0; i < 4; i++)
+	{
+		ui.menus[ui.menus_count - 1].buttons[i].callback = &change_key;
+		ui.menus[ui.menus_count - 1].buttons[i].arg = i;
+	}
+
+	AddMenuTo(&ui, car_skin);
 
 	int frame = 0;
 	while(!WindowShouldClose() && running)
@@ -174,7 +183,7 @@ int main()
 		BeginDrawing();
 		ClearBackground((Color) {150, 150, 150, 255});
 
-		if(state == 1)
+		if(ui.current_menu == 0)
 		{
 			frame ++;
 
@@ -192,7 +201,7 @@ int main()
 
 		DrawFPS(10, 10);
 
-		if(state != 1)
+		/*if(state != 1)
 		{
 			DrawRectangle(0, 0, 800, 800, (Color) {0, 0, 0, 100});
 			
@@ -215,7 +224,6 @@ int main()
 						changing_key = NULL;
 					}
 
-					DrawText("Press a key", 10, 10, 48, RED);
 				}	
 			}
 			else if(state == 3)
@@ -228,15 +236,16 @@ int main()
 		{
 			UpdateButton(&play);
 			DrawButton(&play);
-		}
+		}*/
+		ui.current_menu = state;
+		UpdateUserInterface(ui);
+		DrawUserInterface(ui);
 
 		EndDrawing();
 
 	}
 
-	DestroyMenu(car_skin);
-	DestroyMenu(bindings);
-	DestroyMenu(pause);
+	DestroyUserInterface(ui);
 	DestroyCircuitView(circuit);
 	DestroyCircuitBone(model);
 

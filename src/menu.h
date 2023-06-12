@@ -5,6 +5,11 @@
 #include <stdio.h>
 #include "widgets.h"
 
+typedef enum
+{
+	Normal = 0,
+	KeyChange
+} MenuType;
 
 typedef struct
 {
@@ -12,14 +17,20 @@ typedef struct
 	
 	Button * buttons;
 	unsigned int buttons_count;
+
+	MenuType type;
+
+	int * changing_value;
 } Menu;
 
-Menu CreateMenu(char * name)
+Menu CreateMenu(char * name, MenuType type)
 {
 	return (Menu) {
 		name,
 		NULL,
-		0u
+		0u,
+		type,
+		NULL
 	};
 }
 void AddButtonTo(Menu * m, Button b)
