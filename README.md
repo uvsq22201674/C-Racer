@@ -8,6 +8,5 @@ Linux   : Execute "build.sh"
 Windows : ```gcc src/*.c -o course.exe -lraylib -lm -Ofast```
 
 # TODO
-- Clean code (it is currently PURE GARBAGE I'M NOT EVENT JOKING)
 - Fix DrawCircuitView()
 - Network
