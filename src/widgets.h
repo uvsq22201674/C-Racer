@@ -14,8 +14,9 @@ typedef struct
 	Rectangle rest;
 	Rectangle activation;
 
-	void (*callback) (int);
-	int arg;
+	void (*callback) (int*, int);
+	int * arg0;
+	int   arg1;
 
 	// Internal use only
 
@@ -24,7 +25,7 @@ typedef struct
 	int cooldown;
 } Button;
 
-Button CreateButton(char * text, Vector2 pos, Vector2 size, Texture2D * sprite, Rectangle rest, Rectangle activation, void (*callback) (int), int arg)
+Button CreateButton(char * text, Vector2 pos, Vector2 size, Texture2D * sprite, Rectangle rest, Rectangle activation, void (*callback) (int*, int), int * arg0, int arg1)
 {
 	return (Button) {
 		text,
@@ -34,7 +35,8 @@ Button CreateButton(char * text, Vector2 pos, Vector2 size, Texture2D * sprite, 
 		rest,
 		activation,
 		callback,
-		arg,
+		arg0,
+		arg1,
 		0,
 		0,
 		0
@@ -48,7 +50,7 @@ void UpdateButton(Button * b)
 		if(b->cooldown <= 0)
 		{
 			b->activated = 0;
-			(*b->callback) (b->arg);
+			(*b->callback) (b->arg0, b->arg1);
 		}
 	}
 

@@ -29,8 +29,7 @@ void AddMenuTo(UserInterface * ui, Menu m)
 	ui->menus_count ++;
 	ui->menus = realloc(ui->menus, ui->menus_count * sizeof(Menu));
 	ui->menus[ui->menus_count - 1] = m;
-	if(ui->menus[ui->menus_count - 1].type != Normal)
-		printf("%s\n", "Bitches be hating");
+
 }
 void UpdateUserInterface(UserInterface ui)
 {
